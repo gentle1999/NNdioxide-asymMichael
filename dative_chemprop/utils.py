@@ -1,11 +1,18 @@
+"""
+Author: TMJ
+Date: 2025-03-18 15:42:55
+LastEditors: TMJ
+LastEditTime: 2025-10-06 16:51:52
+Description: 请填写简介
+"""
+
 import subprocess
 from functools import lru_cache
 
 import numpy as np
-import pandas as pd
 from rdkit import Chem
 from rdkit.Chem.rdChemReactions import ReactionFromSmarts
-from skfp.distances import dice_count_distance, tanimoto_count_distance
+from skfp.distances import dice_count_distance
 from skfp.fingerprints import ECFPFingerprint
 
 fpgen = ECFPFingerprint(radius=3, count=True)
@@ -34,14 +41,14 @@ acceptor_templates_mapping = {
     },
     "Bidentate-4": {
         "template_smarts": "C=CC(=O)nn[*]",
-        "ref_mol_smiles": "C=CC(=O)n1nc(C)cc1C",
+        "ref_mol_smiles": "O=C(n1cccn1)/C=C/C2=CC=CC=C2",
         "demo_smiles": "",
         "bandwidth": 1,
         "code_name": "A4",
     },
     "Monodentate-1,2-disub-1": {
         "template_smarts": "[*][C!R]=C[C!R;!$([*#6X2])]=O",
-        "ref_mol_smiles": "C/C=C/C=O",
+        "ref_mol_smiles": "O=C(C1=CC=CC=C1)/C=C/C2=CC=CC=C2",
         "demo_smiles": "",
         "bandwidth": 1,
         "code_name": "A5",
@@ -69,7 +76,7 @@ acceptor_templates_mapping = {
     },
     "Monodentate-cyclic-1": {
         "template_smarts": "C=C(C=C1)C=CC1=O",
-        "ref_mol_smiles": "O=C1C(C)=C/C(C=C1C)=C\C2=CC=CC=C2",
+        "ref_mol_smiles": r"O=C1C(C)=C/C(C=C1C)=C\C2=CC=CC=C2",
         "demo_smiles": "",
         "bandwidth": 1,
         "code_name": "A9",
@@ -163,7 +170,7 @@ donor_templates_mapping = {
     },
     "Monodentate-C-cyclic-4": {
         "template_smarts": "c1cC(=C)C(=O)N1",
-        "ref_mol_smiles": "O=C(NC1=C/2C=CC=C1)C2=C\C",
+        "ref_mol_smiles": r"O=C(NC1=C/2C=CC=C1)C2=C\C",
         "demo_smiles": "",
         "charge_atom_index": 2,
         "bandwidth": 1,
@@ -178,7 +185,7 @@ donor_templates_mapping = {
         "code_name": "D10",
     },
     "Monodentate-C-cyclic-6": {
-        "template_smarts": "C1=CCC(=O)O1",
+        "template_smarts": "[#6,#7]1=[#6,#7]CC(=O)O1",
         "ref_mol_smiles": "C1=CCC(=O)O1",
         "demo_smiles": "",
         "charge_atom_index": 2,
@@ -194,7 +201,7 @@ donor_templates_mapping = {
         "code_name": "D12",
     },
     "Monodentate-N-1": {
-        "template_smarts": "[#7H2,#7H1]-,:,=[#7]",
+        "template_smarts": "[#7H2,#7H1]-,:,=[#7,#6H1]",
         "ref_mol_smiles": "NNC(=O)c1ccccc1",
         "demo_smiles": "",
         "charge_atom_index": 3,
@@ -270,6 +277,9 @@ donor_templates = (
     ReactionFromSmarts("[N:1]#[C:2]-[C:3]-[c:4]>>[N-1:1]=[C:2]=[C:3]-[c:4]"),
     ReactionFromSmarts("[O:1]=[*:2]-[N:3]-[NH2:4]>>[O:1]=[*:2]-[N:3]-[NH1-1:4]"),
     ReactionFromSmarts("[a:1]-[O:2]-[Si:3]>>[a:1]-[O-1:2].[Si:3]"),
+    ReactionFromSmarts("[O:1]=[*:2]-[CH2:3]>>[O-:1]-[*:2]=[CH1:3]"),
+    ReactionFromSmarts("[O:1]=[*:2]-[CH1:3]>>[O-:1]-[*:2]=[CH0:3]"),
+    ReactionFromSmarts("[nH1:1]~[*:2]~[*H1:3]>>[nH0:1]~[*:2]~[*H1-1:3]"),
 )
 ligand_templates = (
     Chem.MolFromSmarts("[O:1]=CC[N+]([O-:2])CC[N+]([O-:3])CC=[O:4]"),
@@ -310,15 +320,15 @@ metal_coordination_dict = {
 def build_catalyst_complex(metal_cation: str, ligand_smiles: str):
     metal_cation_mol = Chem.MolFromSmiles(metal_cation)
     assert metal_cation_mol is not None, f"Invalid metal cation SMILES: {metal_cation}"
-    assert (
-        metal_cation_mol.GetNumAtoms() == 1
-    ), f"Metal cation should have only one atom, but got {metal_cation_mol.GetNumAtoms()}"
-    assert (
-        metal_cation_mol.GetAtomWithIdx(0).GetSymbol() in metal_coordination_dict
-    ), f"Invalid metal cation: {metal_cation_mol.GetAtomWithIdx(0).GetSymbol()}, should be one of {metal_coordination_dict.keys()}"
-    assert (
-        metal_cation_mol.GetAtomWithIdx(0).GetFormalCharge() >= 0
-    ), f"Metal cation should have non-negative formal charge, but got {metal_cation_mol.GetAtomWithIdx(0).GetFormalCharge()}"
+    assert metal_cation_mol.GetNumAtoms() == 1, (
+        f"Metal cation should have only one atom, but got {metal_cation_mol.GetNumAtoms()}"
+    )
+    assert metal_cation_mol.GetAtomWithIdx(0).GetSymbol() in metal_coordination_dict, (
+        f"Invalid metal cation: {metal_cation_mol.GetAtomWithIdx(0).GetSymbol()}, should be one of {metal_coordination_dict.keys()}"
+    )
+    assert metal_cation_mol.GetAtomWithIdx(0).GetFormalCharge() >= 0, (
+        f"Metal cation should have non-negative formal charge, but got {metal_cation_mol.GetAtomWithIdx(0).GetFormalCharge()}"
+    )
 
     ligand_mol = Chem.MolFromSmiles(ligand_smiles)
     assert ligand_mol is not None, f"Invalid ligand SMILES: {ligand_smiles}"
@@ -353,15 +363,15 @@ def build_catalyst_complex(metal_cation: str, ligand_smiles: str):
 def build_no_extra_catalyst_complex(metal_cation: str, ligand_smiles: str):
     metal_cation_mol = Chem.MolFromSmiles(metal_cation)
     assert metal_cation_mol is not None, f"Invalid metal cation SMILES: {metal_cation}"
-    assert (
-        metal_cation_mol.GetNumAtoms() == 1
-    ), f"Metal cation should have only one atom, but got {metal_cation_mol.GetNumAtoms()}"
-    assert (
-        metal_cation_mol.GetAtomWithIdx(0).GetSymbol() in metal_coordination_dict
-    ), f"Invalid metal cation: {metal_cation_mol.GetAtomWithIdx(0).GetSymbol()}, should be one of {metal_coordination_dict.keys()}"
-    assert (
-        metal_cation_mol.GetAtomWithIdx(0).GetFormalCharge() >= 0
-    ), f"Metal cation should have non-negative formal charge, but got {metal_cation_mol.GetAtomWithIdx(0).GetFormalCharge()}"
+    assert metal_cation_mol.GetNumAtoms() == 1, (
+        f"Metal cation should have only one atom, but got {metal_cation_mol.GetNumAtoms()}"
+    )
+    assert metal_cation_mol.GetAtomWithIdx(0).GetSymbol() in metal_coordination_dict, (
+        f"Invalid metal cation: {metal_cation_mol.GetAtomWithIdx(0).GetSymbol()}, should be one of {metal_coordination_dict.keys()}"
+    )
+    assert metal_cation_mol.GetAtomWithIdx(0).GetFormalCharge() >= 0, (
+        f"Metal cation should have non-negative formal charge, but got {metal_cation_mol.GetAtomWithIdx(0).GetFormalCharge()}"
+    )
 
     ligand_mol = Chem.MolFromSmiles(ligand_smiles)
     assert ligand_mol is not None, f"Invalid ligand SMILES: {ligand_smiles}"
@@ -400,9 +410,9 @@ def transform_active_state(raw_donor: str) -> str:
     assert mol is not None, f"Invalid donor SMILES: {raw_donor}"
     for template in donor_templates:
         if mol.HasSubstructMatch(template.GetReactants()[0]):
-            new_smiles = Chem.MolToSmiles(
-                template.RunReactants((mol,))[0][0], kekuleSmiles=True
-            )
+            m = template.RunReactants((mol,))[0][0]
+            Chem.SanitizeMol(m)
+            new_smiles = Chem.MolToSmiles(m, kekuleSmiles=True)
             break
     else:
         raise ValueError(f"Invalid donor: {raw_donor}")
@@ -636,6 +646,7 @@ def build_no_extra_dative_rxn_pesudo_active_smiles(
 
 def get_reactant_class(smiles: str, mapping: dict) -> str | None:
     mol = Chem.MolFromSmiles(smiles)
+    Chem.SanitizeMol(mol)
     for key, value in mapping.items():
         if mol.HasSubstructMatch(Chem.MolFromSmarts(value["template_smarts"])):
             return key

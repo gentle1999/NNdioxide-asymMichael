@@ -9,6 +9,7 @@ Description: 请填写简介
 import itertools
 from typing import Literal, Sequence
 
+import pandas as pd
 from pydantic import Field
 
 from dative_chemprop.models.DativeCGR import DativeCGR

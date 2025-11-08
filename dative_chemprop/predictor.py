@@ -2,7 +2,7 @@
 Author: TMJ
 Date: 2025-05-30 14:59:57
 LastEditors: TMJ
-LastEditTime: 2025-05-31 23:20:03
+LastEditTime: 2025-11-08 10:04:53
 Description: 请填写简介
 """
 
@@ -59,7 +59,7 @@ NAMED_LIGAND = {
     "L3-PrMe2": "O=C([C@@H]1CCC[N@@+]1([O-1])CCC[N@+]1([O-1])CCC[C@H]1C(=O)Nc1c(C)cccc1C)Nc1c(C)cccc1C",
     "L3-PrMe2Br": "O=C([C@@H]1CCC[N@@+]1([O-1])CCC[N@+]1([O-1])CCC[C@H]1C(=O)Nc1c(Br)cc(cc1Br)C)Nc1c(Br)cc(cc1Br)C",
     "L3-PrMe3": "O=C([C@@H]1CCC[N@@+]1([O-1])CCC[N@+]1([O-1])CCC[C@H]1C(=O)Nc1c(C)cc(cc1C)C)Nc1c(C)cc(cc1C)C",
-    "L3-PrPh": "O=C([C@@H]1CCCC[N@@+]1([O-1])CCC[N@+]1([O-1])CCCC[C@H]1C(=O)Nc1ccccc1)Nc1ccccc1",
+    "L3-PrPh": "O=C([C@@H]1CCC[N@@+]1([O-1])CCC[N@+]1([O-1])CCC[C@H]1C(=O)Nc1ccccc1)Nc1ccccc1",
     "L3-PrPr2": "O=C([C@@H]1CCC[N@@+]1([O-1])CCC[N@+]1([O-1])CCC[C@H]1C(=O)Nc1c(cccc1C(C)C)C(C)C)Nc1c(cccc1C(C)C)C(C)C",
     "L3-PrPr2Br": "O=C([C@@H]1CCC[N@@+]1([O-1])CCC[N@+]1([O-1])CCC[C@H]1C(=O)Nc1c(cc(cc1C(C)C)Br)C(C)C)Nc1c(cc(cc1C(C)C)Br)C(C)C",
     "L3-PrPr3": "O=C([C@@H]1CCC[N@@+]1([O-1])CCC[N@+]1([O-1])CCC[C@H]1C(=O)Nc1c(cc(cc1C(C)C)C(C)C)C(C)C)Nc1c(cc(cc1C(C)C)C(C)C)C(C)C",

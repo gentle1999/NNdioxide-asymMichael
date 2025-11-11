@@ -2,10 +2,11 @@
  * @Author: TMJ
  * @Date: 2025-07-08 22:23:12
  * @LastEditors: TMJ
- * @LastEditTime: 2025-10-12 16:29:25
+ * @LastEditTime: 2025-11-11 21:18:40
  * @Description: 请填写简介
 -->
-# *N,N'*-Dioxide/metal complex catalyzed Michael Addiditon: Data & ML
+
+# _N,N'_-Dioxide/metal complex catalyzed Michael Addiditon: Data & ML
 
 ## Environments
 
@@ -32,3 +33,19 @@ pip install localmapper rdkit
 ## Notebooks
 
 Follow the instructions to run the experiments.
+
+## Cite this work
+
+```bibtex
+@article{tangDatadrivenModelingNN2025,
+  title = {Data-driven Modeling of {{{\emph{N}}}}{\emph{,}}{{{\emph{N}}}}{\emph{{$\prime$}}} -dioxide/Metal-catalyzed Asymmetric Michael Additions},
+  author = {Tang, Miao-Jiong and Zhang, Tinghui and Huang, Qiuhao and Li, Shuwen and Liu, Rui and Li, Hongye and Chen, Xiaofan and Dong, Shunxi and Liu, Xiaohua and Feng, Xiaoming and Hong, Xin},
+  year = 2025,
+  month = nov,
+  journal = {Angewandte Chemie International Edition},
+  pages = {e18560},
+  issn = {1433-7851, 1521-3773},
+  doi = {10.1002/anie.202518560},
+  langid = {english},
+}
+```
